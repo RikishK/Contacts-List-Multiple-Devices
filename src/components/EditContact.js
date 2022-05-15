@@ -2,9 +2,9 @@ import React from "react";
 import {Form, Button} from "react-bootstrap";
 import StartFirebase from "./firebaseConfig";
 import {getDatabase, ref, set, onValue, remove} from 'firebase/database';
-
+//get link to database
 const db = StartFirebase();
-
+//write record to database
 function writeUserData(fullname, ph, email, address) {
     set(ref(db, 'Contacts/' + fullname), {
       Phonenumber: ph,
@@ -12,7 +12,7 @@ function writeUserData(fullname, ph, email, address) {
       Address: address
     });
 }
-
+//delete record from database
 function deleteUserData(fullname) {
     remove(ref(db, 'Contacts/' + fullname));
 }
@@ -21,42 +21,40 @@ export class EditContactHere extends React.Component{
     constructor(props){
         super();
         this.state = {
-            Fullname: props.fullname,
-            Phonenumber: props.phonenumber,
-            Email: props.email,
-            Address: props.address,
-            oldKey: props.fullname,
-            handleE: props.handleEdit
+            Fullname: props.fullname,           //Value of Fullname to add to database
+            Phonenumber: props.phonenumber,     //Value of Phonenumber to add to database
+            Email: props.email,                 //Value of Email to add to database
+            Address: props.address,             //Value of Address to add to database
+            oldKey: props.fullname,             //stores the original Fullname so we can delete the old user 
+            handleE: props.handleEdit           //function to switch back to list view page
         }
-        
-        console.log("Arrived:")
-        console.log(props)
     }
-
+    //update value of Fullname
     setFullName = (event) => {
         this.setState({
             Fullname: event.target.value,
         })
     };
-
+    //update value of Phonenumber
     setPhonenumber = (event) => {
         this.setState({
             Phonenumber: event.target.value,
         })
     };
-
+    //update value of Email
     setEmail = (event) => {
         this.setState({
             Email: event.target.value,
         })
     };
-
+    //update value of Address
     setAddress = (event) => {
         this.setState({
             Address: event.target.value,
         })
     };
-
+    //handle Update contact button
+    //deletes the original record and creates new record with new data, switches back to list view page
     handleSubmit = (event) => {
         event.preventDefault();
         const { Fullname, Phonenumber, Email, Address, oldKey} = this.state;
@@ -69,17 +67,17 @@ export class EditContactHere extends React.Component{
         this.state.handleE();
         
     };
-
+    //handles cancel button, switches back to list view page
     handleCancel = (event) => {
         this.state.handleE();
     }
-
+    //handles delete button, deletes the record from the database, switches back to list view page
     handleDelete = (event) => {
         const { Fullname, Phonenumber, Email, Address, oldKey} = this.state;
         deleteUserData(oldKey);
         this.state.handleE();
     }
-
+    //renders form to edit contact information
     render(){
 
         const {Fullname, Phonenumber, Email, Address} = this.state;
